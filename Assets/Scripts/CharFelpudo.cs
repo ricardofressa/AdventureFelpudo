@@ -29,7 +29,7 @@ public class CharFelpudo : MonoBehaviour {
 	void Update (){ 
 
 		moveCameraFrente = Vector3.Scale (transformCamera.forward, new Vector3 (1, 0, 1)).normalized;
-		moveMove = Input.GetAxis ("Vertical") + moveCameraFrente + Input.GetAxis ("Horizontal") * transform.right;
+		moveMove = Input.GetAxis ("Vertical") * moveCameraFrente + Input.GetAxis ("Horizontal") * transform.right;
 
 		vetorDirecao.y -= 3.0f * Time.deltaTime;
 		objetoCharControler.Move (vetorDirecao * Time.deltaTime);
