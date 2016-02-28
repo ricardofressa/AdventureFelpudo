@@ -3,34 +3,86 @@ using System.Collections;
 
 public class CharFelpudo : MonoBehaviour {
 
-		float velocidade = 5.0f;
-		CharacterController objetoCharControler;
-		float giro = 3.0f;
-		float frente = 3.0f;
-		Vector3 vetorDirecao = new Vector3(0,0,0);
+
+	CharacterController objetoCharControler;
+	float velocidade = 5.0f;
+	float giro = 300.0f;
+	float frente = 3.0f;
+	private float pulo = 5.0f;
+	Vector3 vetorDirecao = new Vector3(0,0,0);
+	Vector3 moveCameraFrente;
+	Vector3 moveMove;
+	Vector3 normalZeroPiso = new Vector3 (0, 0, 0);
+	Transform transformCamera;
+
+
+	public GameObject jogador;
+	public Animation animacao; 
+
+	void Start () { 
+		objetoCharControler = GetComponent<CharacterController>(); 
+		animacao = jogador.GetComponent<Animation>(); 
+		transformCamera = Camera.main.transform;
+
+	}
+
+	void Update (){ 
+
+		moveCameraFrente = Vector3.Scale (transformCamera.forward, new Vector3 (1, 0, 1)).normalized;
+		moveMove = Input.GetAxis ("Vertical") + moveCameraFrente + Input.GetAxis ("Horizontal") * transform.right;
+
+		vetorDirecao.y -= 3.0f * Time.deltaTime;
+		objetoCharControler.Move (vetorDirecao * Time.deltaTime);
+		objetoCharControler.Move (moveMove * velocidade * Time.deltaTime);
+
+		if (moveMove.magnitude > 1f)
+			moveMove.Normalize ();
+		moveMove = transform.InverseTransformDirection (moveMove);
+
+		moveMove = Vector3.ProjectOnPlane (moveMove, normalZeroPiso);
+		giro = Mathf.Atan2 (moveMove.x, moveMove.z);
+		frente = moveMove.z;
+
+		objetoCharControler.SimpleMove (Physics.gravity);
+		aplicaRotacao ();
 
 
 
+//		Vector3 forward = Input.GetAxis ("Vertical") * transform.TransformDirection (Vector3.forward) * velocidade;
+//		transform.Rotate (new Vector3 (0, Input.GetAxis ("Horizontal") * giro * Time.deltaTime, 0));
+//
+//		objetoCharControler.Move (forward * Time.deltaTime);
+//		objetoCharControler.SimpleMove (Physics.gravity);
 
-
-		public GameObject jogador;
-		public Animation animacao; 
-
-		private float pulo = 5.0f;
-
-
-
-
-		void Start () { 
-			objetoCharControler = GetComponent<CharacterController>(); 
-			animacao = jogador.GetComponent<Animation>(); 
-
+		if (Input.GetButton ("Jump")) {
+			if (objetoCharControler.isGrounded == true) {
+				vetorDirecao.y = pulo;
+				jogador.GetComponent<Animation> ().Play ("Jump");
+			}
+		}
+		else
+		{
+			if (Input.GetButton ("Horizontal") || Input.GetButton ("Vertical")) 
+			{
+				if (!animacao.IsPlaying ("Jump")) 
+				{
+					jogador.GetComponent<Animation> ().Play ("Walk");
+				}
+			} 
+			else 
+			{
+				if (objetoCharControler.isGrounded == true) {
+					jogador.GetComponent<Animation> ().Play ("Idle");
+				}
+			}
 		}
 
-		void Update (){ 
+	}
 
-
-
-		}
+	void aplicaRotacao()
+	{
+		float turnSpeed = Mathf.Lerp (180, 360, frente);
+		transform.Rotate (0, giro * turnSpeed * Time.deltaTime, 0);
+	}
 }
 
