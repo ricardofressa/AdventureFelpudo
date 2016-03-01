@@ -12,6 +12,15 @@ public class CharFelpudo : MonoBehaviour {
 	public GameObject particulaEstrela;
 	public GameObject objetoParticulaFogo;
 
+	public AudioClip somOvo;
+	public AudioClip somPena;
+	public AudioClip somEstrela; 
+	public AudioClip somHit;
+	public AudioClip somWin;
+	public AudioClip somLose;
+	public AudioClip somApareceStar;
+	public AudioClip somFelpudoVoa;
+
 	CharacterController objetoCharControler;
 	float velocidade = 5.0f;
 	float giro = 300.0f;
@@ -66,6 +75,7 @@ public class CharFelpudo : MonoBehaviour {
 			if (objetoCharControler.isGrounded == true) {
 				vetorDirecao.y = pulo;
 				jogador.GetComponent<Animation> ().Play ("Jump");
+				GetComponent<AudioSource> ().PlayOneShot (somFelpudoVoa, 0.7F);
 			}
 		}
 		else
@@ -97,6 +107,7 @@ public class CharFelpudo : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "OVO") 
 		{
+			GetComponent<AudioSource> ().PlayOneShot (somOvo, 0.7F);
 			Instantiate (particulaOvo, other.gameObject.transform.position, Quaternion.identity);
 			other.gameObject.SetActive (false);
 			numeroObjetos++; verificaPickObjetos();
@@ -104,6 +115,7 @@ public class CharFelpudo : MonoBehaviour {
 
 		if (other.gameObject.tag == "PENA") 
 		{
+			GetComponent<AudioSource> ().PlayOneShot (somPena, 0.7F);
 			Instantiate (particulaPena, other.gameObject.transform.position, Quaternion.identity);
 			other.gameObject.SetActive (false);
 			numeroObjetos++; verificaPickObjetos();
@@ -114,8 +126,10 @@ public class CharFelpudo : MonoBehaviour {
 		{
 			if (podePegarStar) 
 			{
+				GetComponent<AudioSource> ().PlayOneShot (somEstrela, 0.7F);
 				Instantiate (particulaPena, other.gameObject.transform.position, Quaternion.identity);
 				other.gameObject.SetActive (false);
+				GetComponent<AudioSource> ().PlayOneShot (somWin, 0.7F);
 				Invoke ("carregaFase", 3);
 			}
 
@@ -125,12 +139,14 @@ public class CharFelpudo : MonoBehaviour {
 		if (other.gameObject.tag == "FOGUEIRA") 
 		{
 			InvokeRepeating ("mudaEstadoFelpudo", 0, 0.1f);
+			GetComponent<AudioSource> ().PlayOneShot (somHit, 0.7F);
 			objetoCharControler.Move (transform.TransformDirection (Vector3.back) * 3);
 
 		}
 
 		if (other.gameObject.tag == "BURACO") 
 		{
+			GetComponent<AudioSource> ().PlayOneShot (somLose, 0.7F);
 			Invoke ("carregaFase", 0.5f);
 
 		}
@@ -153,6 +169,7 @@ public class CharFelpudo : MonoBehaviour {
 		if (numeroObjetos >= 19) 
 		{
 			podePegarStar = true;
+			GetComponent<AudioSource> ().PlayOneShot (somApareceStar, 0.7F);
 			Destroy(objetoParticulaFogo);
 		}
 	
