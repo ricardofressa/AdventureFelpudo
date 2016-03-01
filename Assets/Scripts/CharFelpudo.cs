@@ -131,7 +131,7 @@ public class CharFelpudo : MonoBehaviour {
 
 		if (other.gameObject.tag == "BURACO") 
 		{
-
+			Invoke ("carregaFase", 0.5f);
 
 		}
 	}
