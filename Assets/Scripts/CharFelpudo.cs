@@ -3,6 +3,13 @@ using System.Collections;
 
 public class CharFelpudo : MonoBehaviour {
 
+	public GameObject jogador;
+	public Animation animacao;
+
+	public GameObject particulaOvo;
+	public GameObject particulaPena;
+	public GameObject particulaEstrela;
+	public GameObject objetoParticulaFogo;
 
 	CharacterController objetoCharControler;
 	float velocidade = 5.0f;
@@ -14,10 +21,6 @@ public class CharFelpudo : MonoBehaviour {
 	Vector3 moveMove;
 	Vector3 normalZeroPiso = new Vector3 (0, 0, 0);
 	Transform transformCamera;
-
-
-	public GameObject jogador;
-	public Animation animacao; 
 
 	void Start () { 
 		objetoCharControler = GetComponent<CharacterController>(); 
@@ -84,5 +87,41 @@ public class CharFelpudo : MonoBehaviour {
 		float turnSpeed = Mathf.Lerp (180, 360, frente);
 		transform.Rotate (0, giro * turnSpeed * Time.deltaTime, 0);
 	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.tag == "OVO") 
+		{
+			Instantiate (particulaOvo, other.gameObject.transform.position, Quaternion.identity);
+			other.gameObject.SetActive (false);
+		}
+
+		if (other.gameObject.tag == "PENA") 
+		{
+			Instantiate (particulaPena, other.gameObject.transform.position, Quaternion.identity);
+			other.gameObject.SetActive (false);
+
+		}
+
+		if (other.gameObject.tag == "ESTRELA") 
+		{
+			Instantiate (particulaPena, other.gameObject.transform.position, Quaternion.identity);
+			other.gameObject.SetActive (false);
+
+		}
+
+		if (other.gameObject.tag == "FOGUEIRA") 
+		{
+
+
+		}
+
+		if (other.gameObject.tag == "BURACO") 
+		{
+
+
+		}
+	}
+
 }
 
