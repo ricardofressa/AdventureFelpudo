@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class CharFelpudo : MonoBehaviour {
 
@@ -21,6 +22,10 @@ public class CharFelpudo : MonoBehaviour {
 	Vector3 moveMove;
 	Vector3 normalZeroPiso = new Vector3 (0, 0, 0);
 	Transform transformCamera;
+
+	float contaPisca = 0;
+	bool podePegarStar = false;
+	int numeroObjetos;
 
 	void Start () { 
 		objetoCharControler = GetComponent<CharacterController>(); 
@@ -94,25 +99,33 @@ public class CharFelpudo : MonoBehaviour {
 		{
 			Instantiate (particulaOvo, other.gameObject.transform.position, Quaternion.identity);
 			other.gameObject.SetActive (false);
+			numeroObjetos++; verificaPickObjetos();
 		}
 
 		if (other.gameObject.tag == "PENA") 
 		{
 			Instantiate (particulaPena, other.gameObject.transform.position, Quaternion.identity);
 			other.gameObject.SetActive (false);
+			numeroObjetos++; verificaPickObjetos();
 
 		}
 
 		if (other.gameObject.tag == "ESTRELA") 
 		{
-			Instantiate (particulaPena, other.gameObject.transform.position, Quaternion.identity);
-			other.gameObject.SetActive (false);
+			if (podePegarStar) 
+			{
+				Instantiate (particulaPena, other.gameObject.transform.position, Quaternion.identity);
+				other.gameObject.SetActive (false);
+				Invoke ("carregaFase", 3);
+			}
+
 
 		}
 
 		if (other.gameObject.tag == "FOGUEIRA") 
 		{
-
+			InvokeRepeating ("mudaEstadoFelpudo", 0, 0.1f);
+			objetoCharControler.Move (transform.TransformDirection (Vector3.back) * 3);
 
 		}
 
@@ -121,6 +134,33 @@ public class CharFelpudo : MonoBehaviour {
 
 
 		}
+	}
+
+	void mudaEstadoFelpudo()
+	{
+		contaPisca++;
+		jogador.SetActive (!jogador.activeInHierarchy);
+		if (contaPisca > 7) 
+		{
+			contaPisca = 0;
+			jogador.SetActive (true);
+			CancelInvoke ();
+		}
+	}
+
+	void verificaPickObjetos()
+	{
+		if (numeroObjetos >= 19) 
+		{
+			podePegarStar = true;
+			Destroy(objetoParticulaFogo);
+		}
+	
+	}
+
+	void carregaFase()
+	{
+		SceneManager.LoadScene ("Game");
 	}
 
 }
