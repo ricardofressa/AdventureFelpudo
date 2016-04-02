@@ -153,13 +153,13 @@ public class CharFelpudo : MonoBehaviour {
 		{
 			InvokeRepeating ("mudaEstadoFelpudo", 0, 0.1f);
 			GetComponent<AudioSource> ().PlayOneShot (somHit, 0.7F);
-			objetoCharControler.Move (transform.TransformDirection (Vector3.back) * 3);
+			objetoCharControler.Move (transform.TransformDirection (Vector3.back) * 2);
 
 		}
 
 		if (other.gameObject.tag == "BURACO") 
 		{
-			GetComponent<AudioSource> ().PlayOneShot (somLose, 0.7F);
+			GetComponent<AudioSource> ().PlayOneShot (somLose, 1.5F);
 			Invoke ("carregaFase", 0.5f);
 
 		}
@@ -179,7 +179,7 @@ public class CharFelpudo : MonoBehaviour {
 
 	void verificaPickObjetos()
 	{
-		if (numeroObjetos >= 19) 
+		if (numeroObjetos >= 18) 
 		{
 			podePegarStar = true;
 			GetComponent<AudioSource> ().PlayOneShot (somApareceStar, 0.7F);
